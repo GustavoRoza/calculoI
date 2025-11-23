@@ -1,31 +1,39 @@
 import sympy
 
-# 1. Defina 'x' como um símbolo
 x = sympy.symbols('x')
 
-# --- Defina sua função e o ponto 'a' aqui ---
-
-# Exemplo 1: lim x->2 (x^2)
-f = (x**2 - 12) / (x - 2)
+f = (x**2 - 4) / (x - 2)
 a = 2
+# ----------------------
 
-# Exemplo 2: lim x->0 (sin(x) / x)
-# f = sympy.sin(x) / x
-# a = 0
+print(f"--- Resolvendo por aproximação numérica usando a definição ---")
+print(f"Analisando f(x) = {f} quando x -> {a}\n")
+print(f"{'distancia do X ao a':<22} | {'X tendendo pela esquerda (a-h)':<35} | {'X tendendo pela direita (a+h)':<35}")
+print("-" * 100) # Aumentei a linha divisória também
 
-# Exemplo 3: lim x->1 ( (x^2 - 1) / (x - 1) )
-# f = (x**2 - 1) / (x - 1)
-# a = 1
-
-# -----------------------------------------------
-
-# 3. Calcule o limite
+h = 0.1
 try:
-    L = sympy.limit(f, x, a)
+    for i in range(5):
+        val_esq = f.subs(x, a - h).evalf()
+        val_dir = f.subs(x, a + h).evalf()
+        print(f"{h:<22.6f} | {val_esq:<35.4f} | {val_dir:<35.4f}")
+        h /= 10
+except Exception as e:
+    print(f"Erro na aproximação: {e}")
 
-    print(f"Função f(x): {f}")
-    print(f"Valor de a: {a}")
-    print(f"O limite de f(x) quando x -> {a} é: {L}")
+print("\n" + "-" * 65)
+
+
+try:
+    L = sympy.limit(f, x, a) 
+    print(f"--- Resultado Exato ---")
+    print(f"Limite calculado: {L}")
+    
+    if L.is_infinite or L == sympy.nan:
+        L_dir = sympy.limit(f, x, a, '+')
+        L_esq = sympy.limit(f, x, a, '-')
+        print(f"Lateral Direita: {L_dir}")
+        print(f"Lateral Esquerda: {L_esq}")
 
 except Exception as e:
-    print(f"Não foi possível calcular o limite: {e}")
+    print(f"Não foi possível calcular o limite exato: {e}")
